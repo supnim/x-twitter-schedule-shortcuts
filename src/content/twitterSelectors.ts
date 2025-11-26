@@ -2,7 +2,7 @@
  * DOM selectors and helpers for interacting with Twitter's schedule modal
  */
 
-export const EXTENSION_ROOT_ID = "twitter-schedule-shortcuts-root";
+export const EXTENSION_ROOT_ID = "twitter-schedule-shortcuts-root"
 
 /**
  * Find the schedule modal in the DOM
@@ -12,16 +12,16 @@ export const EXTENSION_ROOT_ID = "twitter-schedule-shortcuts-root";
 export function findScheduleModal(): HTMLElement | null {
 	const dialogs = document.querySelectorAll<HTMLElement>(
 		'div[role="dialog"][aria-labelledby="modal-header"]'
-	);
+	)
 
 	for (const dialog of dialogs) {
-		const header = dialog.querySelector<HTMLElement>("#modal-header");
+		const header = dialog.querySelector<HTMLElement>("#modal-header")
 		if (header && /Schedule/i.test(header.textContent || "")) {
-			return dialog;
+			return dialog
 		}
 	}
 
-	return null;
+	return null
 }
 
 /**
@@ -30,36 +30,36 @@ export function findScheduleModal(): HTMLElement | null {
  * and dispatch events that React's synthetic event system listens to.
  */
 export function setSelectValue(select: HTMLSelectElement | null, value: string): boolean {
-	if (!select) return false;
+	if (!select) return false
 
-	const option = Array.from(select.options).find((opt) => opt.value === value);
+	const option = Array.from(select.options).find(opt => opt.value === value)
 	if (option) {
 		// Get the native value setter from HTMLSelectElement prototype
 		const nativeSelectValueSetter = Object.getOwnPropertyDescriptor(
 			HTMLSelectElement.prototype,
 			"value"
-		)?.set;
+		)?.set
 
 		if (nativeSelectValueSetter) {
 			// Use the native setter to bypass React's synthetic value
-			nativeSelectValueSetter.call(select, value);
+			nativeSelectValueSetter.call(select, value)
 		} else {
 			// Fallback to direct assignment
-			select.value = value;
+			select.value = value
 		}
 
 		// Dispatch events that React listens to
 		// React uses 'input' event for controlled components
-		const inputEvent = new Event("input", { bubbles: true, cancelable: true });
-		select.dispatchEvent(inputEvent);
+		const inputEvent = new Event("input", { bubbles: true, cancelable: true })
+		select.dispatchEvent(inputEvent)
 
 		// Also dispatch 'change' event for good measure
-		const changeEvent = new Event("change", { bubbles: true, cancelable: true });
-		select.dispatchEvent(changeEvent);
+		const changeEvent = new Event("change", { bubbles: true, cancelable: true })
+		select.dispatchEvent(changeEvent)
 
-		return true;
+		return true
 	}
-	return false;
+	return false
 }
 
 /**
@@ -68,22 +68,22 @@ export function setSelectValue(select: HTMLSelectElement | null, value: string):
  */
 function findSelectByLabelText(modal: HTMLElement, labelText: string): HTMLSelectElement | null {
 	// Find all labels in the modal
-	const labels = modal.querySelectorAll<HTMLLabelElement>("label");
+	const labels = modal.querySelectorAll<HTMLLabelElement>("label")
 
 	for (const label of labels) {
 		if (label.textContent?.trim() === labelText) {
 			// The label has an ID like "SELECTOR_1_LABEL", and the select has aria-labelledby pointing to it
-			const labelId = label.id;
+			const labelId = label.id
 			if (labelId) {
 				const select = modal.querySelector<HTMLSelectElement>(
 					`select[aria-labelledby="${labelId}"]`
-				);
-				if (select) return select;
+				)
+				if (select) return select
 			}
 		}
 	}
 
-	return null;
+	return null
 }
 
 /**
@@ -93,46 +93,46 @@ function findSelectByLabelText(modal: HTMLElement, labelText: string): HTMLSelec
 export async function applyTimeToSelectors(modal: HTMLElement, targetDate: Date): Promise<void> {
 	// Validate modal is still in DOM
 	if (!document.body.contains(modal)) {
-		throw new Error("Modal no longer in DOM");
+		throw new Error("Modal no longer in DOM")
 	}
 
-	const year = targetDate.getFullYear();
-	const month = targetDate.getMonth() + 1; // 1-12
-	const day = targetDate.getDate(); // 1-31
-	const hour = targetDate.getHours(); // 0-23
-	const minute = targetDate.getMinutes(); // 0-59
+	const year = targetDate.getFullYear()
+	const month = targetDate.getMonth() + 1 // 1-12
+	const day = targetDate.getDate() // 1-31
+	const hour = targetDate.getHours() // 0-23
+	const minute = targetDate.getMinutes() // 0-59
 
 	// Helper to set value with small delay for React to process
 	const setWithDelay = async (labelText: string, value: string) => {
 		// Re-validate modal before each selector
 		if (!document.body.contains(modal)) {
-			throw new Error(`Modal removed during selector update: ${labelText}`);
+			throw new Error(`Modal removed during selector update: ${labelText}`)
 		}
 
-		const select = findSelectByLabelText(modal, labelText);
+		const select = findSelectByLabelText(modal, labelText)
 
 		if (!select) {
-			console.warn(`[Twitter Schedule Shortcuts] Could not find selector with label: ${labelText}`);
-			return;
+			console.warn(`[Twitter Schedule Shortcuts] Could not find selector with label: ${labelText}`)
+			return
 		}
 
-		const success = setSelectValue(select, value);
+		const success = setSelectValue(select, value)
 		if (!success) {
-			console.warn(`[Twitter Schedule Shortcuts] Failed to set ${labelText} to ${value}`);
+			console.warn(`[Twitter Schedule Shortcuts] Failed to set ${labelText} to ${value}`)
 		}
 		// Small delay to let React process the change
-		await new Promise((resolve) => setTimeout(resolve, 50));
-	};
+		await new Promise(resolve => setTimeout(resolve, 50))
+	}
 
 	// Set values in order with delays
 	// Date selectors first (month affects available days)
-	await setWithDelay("Month", String(month));
-	await setWithDelay("Day", String(day));
-	await setWithDelay("Year", String(year));
+	await setWithDelay("Month", String(month))
+	await setWithDelay("Day", String(day))
+	await setWithDelay("Year", String(year))
 
 	// Then time selectors
-	await setWithDelay("Hour", String(hour));
-	await setWithDelay("Minute", String(minute));
+	await setWithDelay("Hour", String(hour))
+	await setWithDelay("Minute", String(minute))
 }
 
 /**
@@ -141,37 +141,67 @@ export async function applyTimeToSelectors(modal: HTMLElement, targetDate: Date)
 export function findPreviewElement(modal: HTMLElement): HTMLElement | null {
 	// Look for text that starts with "Will send on"
 	const walker = document.createTreeWalker(modal, NodeFilter.SHOW_TEXT, {
-		acceptNode: (node) => {
+		acceptNode: node => {
 			if (node.textContent?.includes("Will send on")) {
-				return NodeFilter.FILTER_ACCEPT;
+				return NodeFilter.FILTER_ACCEPT
 			}
-			return NodeFilter.FILTER_REJECT;
+			return NodeFilter.FILTER_REJECT
 		},
-	});
+	})
 
-	const textNode = walker.nextNode();
+	const textNode = walker.nextNode()
 	if (textNode?.parentElement) {
 		// Walk up to find a suitable container element
-		let element: HTMLElement | null = textNode.parentElement;
+		let element: HTMLElement | null = textNode.parentElement
 		while (element && element !== modal) {
 			// Look for the parent row container
 			if (element.previousElementSibling || element.parentElement !== modal) {
 				// Found a suitable insertion point
-				const container = element.closest('[data-testid], [role="presentation"]') || element;
-				return container as HTMLElement;
+				const container = element.closest('[data-testid], [role="presentation"]') || element
+				return container as HTMLElement
 			}
-			element = element.parentElement;
+			element = element.parentElement
 		}
-		return textNode.parentElement;
+		return textNode.parentElement
 	}
 
-	return null;
+	return null
 }
 
 /**
- * Check if Twitter is in dark mode
+ * Check if Twitter is in dark mode by examining the actual page theme
  */
 export function isTwitterDarkMode(): boolean {
-	// Use prefers-color-scheme media query
-	return window.matchMedia("(prefers-color-scheme: dark)").matches;
+	// Strategy 1: Check for Twitter's dark mode attribute on html or body
+	const htmlElement = document.documentElement
+	const bodyElement = document.body
+
+	// Twitter uses data-theme or similar attributes
+	const theme =
+		htmlElement.getAttribute("data-theme") ||
+		htmlElement.getAttribute("data-color-mode") ||
+		bodyElement.getAttribute("data-theme")
+
+	if (theme === "dark" || theme === "dim") {
+		return true
+	}
+
+	// Strategy 2: Check computed background color of body
+	// Twitter dark mode typically has very dark or black background
+	const backgroundColor = window.getComputedStyle(bodyElement).backgroundColor
+
+	// Parse RGB values
+	const rgbMatch = backgroundColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/)
+	if (rgbMatch && rgbMatch.length >= 4) {
+		const r = Number(rgbMatch[1])
+		const g = Number(rgbMatch[2])
+		const b = Number(rgbMatch[3])
+		// If background is very dark (all values < 50), it's likely dark mode
+		if (r < 50 && g < 50 && b < 50) {
+			return true
+		}
+	}
+
+	// Strategy 3: Fallback to prefers-color-scheme
+	return window.matchMedia("(prefers-color-scheme: dark)").matches
 }

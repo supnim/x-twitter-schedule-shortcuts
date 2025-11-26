@@ -1,42 +1,54 @@
-# Twitter Schedule Shortcuts
+<div align="center">
 
-A Chrome extension that adds quick "hours from now" buttons to the X.com (Twitter) scheduling modal.
+# ⚡ Twitter Schedule Shortcuts
 
-## Features
+![Demo](https://media4.giphy.com/media/1CrHkXdEOagOU5vsSb/giphy.gif)
 
-- Injects a UI strip inside the Twitter schedule modal with buttons like `1H, 2H, ..., 12H`
-- Clicking a button sets the native Twitter schedule fields to "now + N hours"
-- Shows time equivalents in your local timezone, US Eastern, and UK London
-- Supports both light and dark Twitter themes
-- No backend, no posting automation - just DOM + UX sugar
+**A Chrome extension that adds quick "hours from now" buttons to the X.com (Twitter) scheduling modal.**
 
-## Installation
+---
 
-### Development
+</div>
 
-1. Install dependencies:
+## ✨ Features
+
+- ⏱️ **Quick hour buttons** - One-click scheduling with `1H, 2H, ..., 12H` buttons
+- 🎯 **Smart time setting** - Automatically calculates and sets "now + N hours"
+- 🌍 **Multi-timezone preview** - See times in your local timezone, US Eastern, and UK London
+- 🎨 **Theme support** - Works seamlessly with both light and dark Twitter themes
+- 🔒 **Privacy-first** - No backend, no data collection, just local DOM manipulation
+
+## 📦 Installation
+
+### 👥 For Users
+
+1. **Download** or clone this repository
+2. **Install dependencies:**
    ```bash
    bun install
    ```
-
-2. Build the extension:
+3. **Build the extension:**
    ```bash
    bun run build
    ```
+4. **Load in Chrome:**
+   - Open Chrome and go to `chrome://extensions/`
+   - Enable **Developer mode** (toggle in top-right)
+   - Click **Load unpacked**
+   - Select the `dist` folder from this project
+   - Done! 🎉
 
-3. Load in Chrome:
-   - Go to `chrome://extensions/`
-   - Enable "Developer mode"
-   - Click "Load unpacked"
-   - Select the `dist` folder
+> The extension automatically activates when you open the scheduling modal on x.com
 
-### Development with watch mode
+### 🛠️ For Developers
+
+**Development with watch mode:**
 
 ```bash
 bun run dev
 ```
 
-This will watch for changes and rebuild automatically.
+This watches for changes and rebuilds automatically. Refresh the extension in `chrome://extensions/` to see updates.
 
 ## Project Structure
 
@@ -60,33 +72,43 @@ This will watch for changes and rebuild automatically.
 └── dist/                  # Build output (load this in Chrome)
 ```
 
-## Tech Stack
+## 🛠️ Tech Stack
 
-- **TypeScript** - Type safety
-- **React** - UI components
-- **Tailwind CSS** - Styling (with `tss-` prefix to avoid conflicts)
-- **shadcn/ui** - UI primitives
-- **Biome** - Linting and formatting
-- **Vite** - Build tool
-- **Bun** - Package manager and runtime
+| Technology | Purpose |
+|------------|---------|
+| ⚡ **TypeScript** | Type safety |
+| ⚛️ **React** | UI components |
+| 🎨 **Tailwind CSS** | Styling (with `tss-` prefix) |
+| 🎭 **shadcn/ui** | UI primitives |
+| ✨ **Biome** | Linting & formatting |
+| 🏗️ **Vite** | Build tool |
+| 🍞 **Bun** | Package manager |
 
-## Scripts
+## 📜 Scripts
 
-- `bun run build` - Build for production
-- `bun run dev` - Build with watch mode
-- `bun run check` - Run Biome checks
-- `bun run check:fix` - Fix Biome issues
-- `bun run format` - Format code
-- `bun run lint` - Lint code
+| Command | Description |
+|---------|-------------|
+| `bun run build` | 🏗️ Build for production |
+| `bun run dev` | 👀 Build with watch mode |
+| `bun run check` | ✅ Run Biome checks |
+| `bun run check:fix` | 🔧 Fix Biome issues |
+| `bun run format` | 💅 Format code |
+| `bun run lint` | 🔍 Lint code |
 
-## How It Works
+## 🔧 How It Works
 
-1. The content script uses a `MutationObserver` to detect when Twitter's schedule modal opens
-2. When detected, it injects a React root element inside the modal
-3. The UI provides hour buttons (1-12H) that calculate "now + N hours"
-4. Clicking a button updates Twitter's native `<select>` elements with the calculated date/time
-5. Time is displayed in local timezone, US Eastern, and UK London for reference
+1. 👁️ Content script uses `MutationObserver` to detect when Twitter's schedule modal opens
+2. 💉 Injects a React root element inside the modal
+3. ⏰ Hour buttons calculate "now + N hours" in real-time
+4. 🎯 Updates Twitter's native `<select>` elements with the calculated date/time
+5. 🌐 Displays times across multiple timezones for convenience
 
-## License
+---
+
+## 📄 License
 
 MIT
+
+## 👋 Connect
+
+Built by [@sup_nim](https://x.com/sup_nim) - say hi on Twitter!

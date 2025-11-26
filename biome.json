@@ -5,36 +5,58 @@
 		"clientKind": "git",
 		"useIgnoreFile": true
 	},
+	"files": {
+		"ignoreUnknown": false,
+		"ignore": ["node_modules", "dist", "build", ".next", "out", "coverage", "vendor", "bun.lockb"]
+	},
 	"organizeImports": {
 		"enabled": true
 	},
 	"formatter": {
 		"enabled": true,
-		"indentStyle": "tab",
 		"indentWidth": 2,
+		"indentStyle": "tab",
 		"lineWidth": 100
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "double",
+			"jsxQuoteStyle": "double",
+			"quoteProperties": "asNeeded",
+			"trailingCommas": "es5",
+			"semicolons": "asNeeded",
+			"arrowParentheses": "asNeeded",
+			"bracketSpacing": true,
+			"bracketSameLine": false
+		}
 	},
 	"linter": {
 		"enabled": true,
 		"rules": {
 			"recommended": true,
 			"correctness": {
+				"noConstAssign": "error",
 				"noUnusedImports": "error",
-				"noUnusedVariables": "error"
+				"noUnusedVariables": "warn"
 			},
 			"style": {
-				"noNonNullAssertion": "off"
+				"noNonNullAssertion": "off",
+				"noParameterAssign": "off",
+				"useConst": "error"
+			},
+			"suspicious": {
+				"noDebugger": "warn",
+				"noConsole": "off",
+				"noExplicitAny": "off"
 			}
 		}
 	},
-	"javascript": {
-		"formatter": {
-			"quoteStyle": "double",
-			"semicolons": "always",
-			"trailingCommas": "es5"
+	"overrides": [
+		{
+			"include": ["src/styles/*.css", "**/*.css"],
+			"linter": {
+				"enabled": false
+			}
 		}
-	},
-	"files": {
-		"ignore": ["dist", "node_modules", ".claude", "*.config.js", "*.config.cjs"]
-	}
+	]
 }

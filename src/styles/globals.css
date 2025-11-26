@@ -1,61 +1,61 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* Scoped CSS variables for our extension - prefixed to avoid conflicts with Twitter's styles */
+@source "src/**/*.{ts,tsx}";
+
+/* Scoped CSS variables for our extension - using standard shadcn naming */
 #twitter-schedule-shortcuts-root {
-	/* Light theme (default) */
-	--tss-background: 0 0% 100%;
-	--tss-foreground: 222.2 84% 4.9%;
-	--tss-card: 0 0% 100%;
-	--tss-card-foreground: 222.2 84% 4.9%;
-	--tss-popover: 0 0% 100%;
-	--tss-popover-foreground: 222.2 84% 4.9%;
-	--tss-primary: 222.2 47.4% 11.2%;
-	--tss-primary-foreground: 210 40% 98%;
-	--tss-secondary: 210 40% 96.1%;
-	--tss-secondary-foreground: 222.2 47.4% 11.2%;
-	--tss-muted: 210 40% 96.1%;
-	--tss-muted-foreground: 215.4 16.3% 46.9%;
-	--tss-accent: 210 40% 96.1%;
-	--tss-accent-foreground: 222.2 47.4% 11.2%;
-	--tss-destructive: 0 84.2% 60.2%;
-	--tss-destructive-foreground: 210 40% 98%;
-	--tss-border: 214.3 31.8% 91.4%;
-	--tss-input: 214.3 31.8% 91.4%;
-	--tss-ring: 222.2 84% 4.9%;
-	--tss-radius: 0.5rem;
+	/* Light theme (default) - using OKLCH color space */
+	--radius: 0.5rem;
+	--background: oklch(1 0 0);
+	--foreground: oklch(0.145 0 0);
+	--card: oklch(1 0 0);
+	--card-foreground: oklch(0.145 0 0);
+	--popover: oklch(1 0 0);
+	--popover-foreground: oklch(0.145 0 0);
+	--primary: oklch(0.205 0 0);
+	--primary-foreground: oklch(0.985 0 0);
+	--secondary: oklch(0.97 0 0);
+	--secondary-foreground: oklch(0.205 0 0);
+	--muted: oklch(0.97 0 0);
+	--muted-foreground: oklch(0.556 0 0);
+	--accent: oklch(0.97 0 0);
+	--accent-foreground: oklch(0.205 0 0);
+	--destructive: oklch(0.577 0.245 27.325);
+	--destructive-foreground: oklch(0.985 0 0);
+	--border: oklch(0.922 0 0);
+	--input: oklch(0.922 0 0);
+	--ring: oklch(0.708 0 0);
 }
 
 /* Dark theme - applied when Twitter is in dark mode */
-#twitter-schedule-shortcuts-root.tss-dark {
-	--tss-background: 222.2 84% 4.9%;
-	--tss-foreground: 210 40% 98%;
-	--tss-card: 222.2 84% 4.9%;
-	--tss-card-foreground: 210 40% 98%;
-	--tss-popover: 222.2 84% 4.9%;
-	--tss-popover-foreground: 210 40% 98%;
-	--tss-primary: 210 40% 98%;
-	--tss-primary-foreground: 222.2 47.4% 11.2%;
-	--tss-secondary: 217.2 32.6% 17.5%;
-	--tss-secondary-foreground: 210 40% 98%;
-	--tss-muted: 217.2 32.6% 17.5%;
-	--tss-muted-foreground: 215 20.2% 65.1%;
-	--tss-accent: 217.2 32.6% 17.5%;
-	--tss-accent-foreground: 210 40% 98%;
-	--tss-destructive: 0 62.8% 30.6%;
-	--tss-destructive-foreground: 210 40% 98%;
-	--tss-border: 217.2 32.6% 17.5%;
-	--tss-input: 217.2 32.6% 17.5%;
-	--tss-ring: 212.7 26.8% 83.9%;
+#twitter-schedule-shortcuts-root.dark {
+	--background: oklch(0.145 0 0);
+	--foreground: oklch(0.985 0 0);
+	--card: oklch(0.205 0 0);
+	--card-foreground: oklch(0.985 0 0);
+	--popover: oklch(0.269 0 0);
+	--popover-foreground: oklch(0.985 0 0);
+	--primary: oklch(0.922 0 0);
+	--primary-foreground: oklch(0.205 0 0);
+	--secondary: oklch(0.269 0 0);
+	--secondary-foreground: oklch(0.985 0 0);
+	--muted: oklch(0.269 0 0);
+	--muted-foreground: oklch(0.708 0 0);
+	--accent: oklch(0.371 0 0);
+	--accent-foreground: oklch(0.985 0 0);
+	--destructive: oklch(0.704 0.191 22.216);
+	--destructive-foreground: oklch(0.985 0 0);
+	--border: oklch(1 0 0 / 10%);
+	--input: oklch(1 0 0 / 15%);
+	--ring: oklch(0.556 0 0);
 }
 
 /* Base styles for our root element */
 #twitter-schedule-shortcuts-root {
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-	font-size: 15px;
+	font-size: 18px;
 	line-height: 1.5;
-	color: hsl(var(--tss-foreground));
+	color: var(--foreground);
 }
 
 /* Reset any inherited styles from Twitter */
@@ -64,10 +64,99 @@
 }
 
 #twitter-schedule-shortcuts-root a {
-	color: hsl(var(--tss-primary));
+	color: var(--primary);
 	text-decoration: none;
 }
 
 #twitter-schedule-shortcuts-root a:hover {
 	text-decoration: underline;
+}
+
+/* Tailwind utility overrides for scoped variables */
+#twitter-schedule-shortcuts-root {
+	.bg-card {
+		background-color: var(--card);
+	}
+	.bg-background {
+		background-color: var(--background);
+	}
+	.bg-primary {
+		background-color: var(--primary);
+	}
+	.bg-secondary {
+		background-color: var(--secondary);
+	}
+	.bg-destructive {
+		background-color: var(--destructive);
+	}
+	.bg-muted {
+		background-color: var(--muted);
+	}
+	.bg-accent {
+		background-color: var(--accent);
+	}
+	.bg-popover {
+		background-color: var(--popover);
+	}
+
+	.text-card-foreground {
+		color: var(--card-foreground);
+	}
+	.text-foreground {
+		color: var(--foreground);
+	}
+	.text-primary {
+		color: var(--primary);
+	}
+	.text-primary-foreground {
+		color: var(--primary-foreground);
+	}
+	.text-secondary-foreground {
+		color: var(--secondary-foreground);
+	}
+	.text-destructive-foreground {
+		color: var(--destructive-foreground);
+	}
+	.text-muted-foreground {
+		color: var(--muted-foreground);
+	}
+	.text-accent-foreground {
+		color: var(--accent-foreground);
+	}
+	.text-popover-foreground {
+		color: var(--popover-foreground);
+	}
+
+	.border-border {
+		border-color: var(--border);
+	}
+	.border-input {
+		border-color: var(--input);
+	}
+
+	.ring-ring {
+		--tw-ring-color: var(--ring);
+	}
+	.focus-visible\:ring-ring:focus-visible {
+		--tw-ring-color: var(--ring);
+	}
+
+	.hover\:bg-primary\/90:hover {
+		background-color: color-mix(in oklab, var(--primary) 90%, transparent);
+	}
+	.hover\:bg-secondary\/80:hover {
+		background-color: color-mix(in oklab, var(--secondary) 80%, transparent);
+	}
+	.hover\:bg-destructive\/90:hover {
+		background-color: color-mix(in oklab, var(--destructive) 90%, transparent);
+	}
+	.hover\:bg-accent:hover {
+		background-color: var(--accent);
+	}
+	.hover\:text-accent-foreground:hover {
+		color: var(--accent-foreground);
+	}
+	.hover\:text-foreground:hover {
+		color: var(--foreground);
+	}
 }

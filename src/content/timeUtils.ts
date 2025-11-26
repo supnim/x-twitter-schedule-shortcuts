@@ -5,25 +5,26 @@
 export const TIMEZONES = {
 	US: "America/New_York",
 	UK: "Europe/London",
-} as const;
+} as const
 
 /**
  * Calculate a target date N hours from now
  */
 export function getTargetTime(hoursFromNow: number): Date {
+	let validHours = hoursFromNow
 	if (!Number.isFinite(hoursFromNow) || hoursFromNow <= 0) {
-		console.warn("[timeUtils] Invalid hoursFromNow, defaulting to 1 hour");
-		hoursFromNow = 1;
+		console.warn("[timeUtils] Invalid hoursFromNow, defaulting to 1 hour")
+		validHours = 1
 	}
-	const now = new Date();
-	return new Date(now.getTime() + hoursFromNow * 60 * 60 * 1000);
+	const now = new Date()
+	return new Date(now.getTime() + validHours * 60 * 60 * 1000)
 }
 
 /**
  * Get the user's local timezone identifier
  */
 export function getLocalTimezone(): string {
-	return Intl.DateTimeFormat().resolvedOptions().timeZone;
+	return Intl.DateTimeFormat().resolvedOptions().timeZone
 }
 
 /**
@@ -31,20 +32,20 @@ export function getLocalTimezone(): string {
  */
 export function getTimezoneAbbreviation(timeZone: string, date: Date | null | undefined): string {
 	if (!date || !(date instanceof Date) || Number.isNaN(date.getTime())) {
-		return timeZone;
+		return timeZone
 	}
 	try {
 		// Use formatToParts to extract the timezone name
 		const formatter = new Intl.DateTimeFormat("en-US", {
 			timeZone,
 			timeZoneName: "short",
-		});
+		})
 
-		const parts = formatter.formatToParts(date);
-		const tzPart = parts.find((part) => part.type === "timeZoneName");
-		return tzPart?.value || timeZone;
+		const parts = formatter.formatToParts(date)
+		const tzPart = parts.find(part => part.type === "timeZoneName")
+		return tzPart?.value || timeZone
 	} catch {
-		return timeZone;
+		return timeZone
 	}
 }
 
@@ -54,7 +55,7 @@ export function getTimezoneAbbreviation(timeZone: string, date: Date | null | un
  */
 export function formatForTimezone(date: Date | null | undefined, timeZone: string): string {
 	if (!date || !(date instanceof Date) || Number.isNaN(date.getTime())) {
-		return "Invalid date";
+		return "Invalid date"
 	}
 	try {
 		return new Intl.DateTimeFormat("en-GB", {
@@ -65,31 +66,31 @@ export function formatForTimezone(date: Date | null | undefined, timeZone: strin
 			minute: "2-digit",
 			hour12: false,
 			timeZone,
-		}).format(date);
+		}).format(date)
 	} catch {
 		// Fallback if timezone is invalid
-		return date.toLocaleString();
+		return date.toLocaleString()
 	}
 }
 
 export interface TimeContext {
-	targetDate: Date;
-	hoursFromNow: number;
+	targetDate: Date
+	hoursFromNow: number
 	local: {
-		formatted: string;
-		timezone: string;
-		abbreviation: string;
-	};
+		formatted: string
+		timezone: string
+		abbreviation: string
+	}
 	us: {
-		formatted: string;
-		timezone: string;
-		abbreviation: string;
-	};
+		formatted: string
+		timezone: string
+		abbreviation: string
+	}
 	uk: {
-		formatted: string;
-		timezone: string;
-		abbreviation: string;
-	};
+		formatted: string
+		timezone: string
+		abbreviation: string
+	}
 }
 
 /**
@@ -98,8 +99,8 @@ export interface TimeContext {
  * @param targetDate - Optional pre-calculated target date (used when randomization is applied)
  */
 export function buildTimeContext(hoursFromNow: number, targetDate?: Date): TimeContext {
-	const finalTargetDate = targetDate || getTargetTime(hoursFromNow);
-	const localTimezone = getLocalTimezone();
+	const finalTargetDate = targetDate || getTargetTime(hoursFromNow)
+	const localTimezone = getLocalTimezone()
 
 	return {
 		targetDate: finalTargetDate,
@@ -119,7 +120,7 @@ export function buildTimeContext(hoursFromNow: number, targetDate?: Date): TimeC
 			timezone: TIMEZONES.UK,
 			abbreviation: getTimezoneAbbreviation(TIMEZONES.UK, finalTargetDate),
 		},
-	};
+	}
 }
 
 /**
@@ -129,9 +130,9 @@ export function getTimezoneFriendlyName(timeZone: string): string {
 	const names: Record<string, string> = {
 		"America/New_York": "US (ET)",
 		"Europe/London": "UK",
-	};
+	}
 
-	return names[timeZone] || timeZone.split("/").pop()?.replace(/_/g, " ") || timeZone;
+	return names[timeZone] || timeZone.split("/").pop()?.replace(/_/g, " ") || timeZone
 }
 
 /**
@@ -139,7 +140,7 @@ export function getTimezoneFriendlyName(timeZone: string): string {
  */
 export function formatTimeShort(date: Date | null | undefined): string {
 	if (!date || !(date instanceof Date) || Number.isNaN(date.getTime())) {
-		return "N/A";
+		return "N/A"
 	}
 	return new Intl.DateTimeFormat("en-US", {
 		hour: "numeric",
@@ -148,7 +149,7 @@ export function formatTimeShort(date: Date | null | undefined): string {
 	})
 		.format(date)
 		.toLowerCase()
-		.replace(/\s+/g, ""); // Replace all whitespace
+		.replace(/\s+/g, "") // Replace all whitespace
 }
 
 /**
@@ -156,13 +157,13 @@ export function formatTimeShort(date: Date | null | undefined): string {
  */
 export function applyRandomMinutes(date: Date, range: number): Date {
 	if (!Number.isFinite(range) || range < 0) {
-		console.warn("[timeUtils] Invalid range for applyRandomMinutes, returning original date");
-		return date;
+		console.warn("[timeUtils] Invalid range for applyRandomMinutes, returning original date")
+		return date
 	}
 	if (!date || !(date instanceof Date) || Number.isNaN(date.getTime())) {
-		console.warn("[timeUtils] Invalid date for applyRandomMinutes");
-		return new Date();
+		console.warn("[timeUtils] Invalid date for applyRandomMinutes")
+		return new Date()
 	}
-	const randomOffset = Math.floor(Math.random() * (range * 2 + 1)) - range;
-	return new Date(date.getTime() + randomOffset * 60 * 1000);
+	const randomOffset = Math.floor(Math.random() * (range * 2 + 1)) - range
+	return new Date(date.getTime() + randomOffset * 60 * 1000)
 }
