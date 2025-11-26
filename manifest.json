@@ -9,14 +9,13 @@
 		"default_title": "Twitter Schedule Shortcuts"
 	},
 	"background": {
-		"service_worker": "background.js",
+		"service_worker": "src/background/index.ts",
 		"type": "module"
 	},
 	"content_scripts": [
 		{
 			"matches": ["https://x.com/*", "https://twitter.com/*"],
-			"js": ["content-script.js"],
-			"css": ["style.css"],
+			"js": ["src/content/index.tsx"],
 			"run_at": "document_idle"
 		}
 	]

@@ -63,9 +63,32 @@ export function setSelectValue(select: HTMLSelectElement | null, value: string):
 }
 
 /**
+ * Find a select element by its label text within the modal.
+ * Twitter associates labels with selects via aria-labelledby pointing to label IDs.
+ */
+function findSelectByLabelText(modal: HTMLElement, labelText: string): HTMLSelectElement | null {
+	// Find all labels in the modal
+	const labels = modal.querySelectorAll<HTMLLabelElement>("label");
+
+	for (const label of labels) {
+		if (label.textContent?.trim() === labelText) {
+			// The label has an ID like "SELECTOR_1_LABEL", and the select has aria-labelledby pointing to it
+			const labelId = label.id;
+			if (labelId) {
+				const select = modal.querySelector<HTMLSelectElement>(
+					`select[aria-labelledby="${labelId}"]`
+				);
+				if (select) return select;
+			}
+		}
+	}
+
+	return null;
+}
+
+/**
  * Apply a target date/time to Twitter's schedule selectors.
- * Twitter uses literal IDs: SELECTOR_1 (month), SELECTOR_2 (day), SELECTOR_3 (year),
- * SELECTOR_4 (hour), SELECTOR_5 (minute)
+ * Finds selectors by their label text (Month, Day, Year, Hour, Minute) to handle dynamic IDs.
  */
 export async function applyTimeToSelectors(modal: HTMLElement, targetDate: Date): Promise<void> {
 	// Validate modal is still in DOM
@@ -80,22 +103,22 @@ export async function applyTimeToSelectors(modal: HTMLElement, targetDate: Date)
 	const minute = targetDate.getMinutes(); // 0-59
 
 	// Helper to set value with small delay for React to process
-	const setWithDelay = async (selectorId: string, value: string) => {
+	const setWithDelay = async (labelText: string, value: string) => {
 		// Re-validate modal before each selector
 		if (!document.body.contains(modal)) {
-			throw new Error(`Modal removed during selector update: ${selectorId}`);
+			throw new Error(`Modal removed during selector update: ${labelText}`);
 		}
 
-		const select = modal.querySelector<HTMLSelectElement>(`#${selectorId}`);
+		const select = findSelectByLabelText(modal, labelText);
 
 		if (!select) {
-			console.warn(`[Twitter Schedule Shortcuts] Could not find selector: ${selectorId}`);
+			console.warn(`[Twitter Schedule Shortcuts] Could not find selector with label: ${labelText}`);
 			return;
 		}
 
 		const success = setSelectValue(select, value);
 		if (!success) {
-			console.warn(`[Twitter Schedule Shortcuts] Failed to set ${selectorId} to ${value}`);
+			console.warn(`[Twitter Schedule Shortcuts] Failed to set ${labelText} to ${value}`);
 		}
 		// Small delay to let React process the change
 		await new Promise((resolve) => setTimeout(resolve, 50));
@@ -103,13 +126,13 @@ export async function applyTimeToSelectors(modal: HTMLElement, targetDate: Date)
 
 	// Set values in order with delays
 	// Date selectors first (month affects available days)
-	await setWithDelay("SELECTOR_6", String(month)); // Month
-	await setWithDelay("SELECTOR_7", String(day));   // Day
-	await setWithDelay("SELECTOR_8", String(year));  // Year
+	await setWithDelay("Month", String(month));
+	await setWithDelay("Day", String(day));
+	await setWithDelay("Year", String(year));
 
 	// Then time selectors
-	await setWithDelay("SELECTOR_9", String(hour));   // Hour
-	await setWithDelay("SELECTOR_10", String(minute)); // Minute
+	await setWithDelay("Hour", String(hour));
+	await setWithDelay("Minute", String(minute));
 }
 
 /**

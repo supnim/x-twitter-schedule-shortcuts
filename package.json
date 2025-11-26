@@ -4,7 +4,7 @@
 	"description": "Adds quick 'hours from now' buttons to the X.com scheduling modal",
 	"type": "module",
 	"scripts": {
-		"dev": "vite build --watch",
+		"dev": "vite",
 		"build": "vite build",
 		"check": "biome check .",
 		"check:fix": "biome check --write .",
@@ -22,6 +22,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
+		"@crxjs/vite-plugin": "^2.0.0-beta.33",
 		"@types/chrome": "^0.0.279",
 		"@types/react": "^18.3.12",
 		"@types/react-dom": "^18.3.1",
