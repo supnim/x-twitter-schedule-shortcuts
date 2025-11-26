@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Scoped CSS variables for our extension - prefixed to avoid conflicts with Twitter's styles */
+#twitter-schedule-shortcuts-root {
+	/* Light theme (default) */
+	--tss-background: 0 0% 100%;
+	--tss-foreground: 222.2 84% 4.9%;
+	--tss-card: 0 0% 100%;
+	--tss-card-foreground: 222.2 84% 4.9%;
+	--tss-popover: 0 0% 100%;
+	--tss-popover-foreground: 222.2 84% 4.9%;
+	--tss-primary: 222.2 47.4% 11.2%;
+	--tss-primary-foreground: 210 40% 98%;
+	--tss-secondary: 210 40% 96.1%;
+	--tss-secondary-foreground: 222.2 47.4% 11.2%;
+	--tss-muted: 210 40% 96.1%;
+	--tss-muted-foreground: 215.4 16.3% 46.9%;
+	--tss-accent: 210 40% 96.1%;
+	--tss-accent-foreground: 222.2 47.4% 11.2%;
+	--tss-destructive: 0 84.2% 60.2%;
+	--tss-destructive-foreground: 210 40% 98%;
+	--tss-border: 214.3 31.8% 91.4%;
+	--tss-input: 214.3 31.8% 91.4%;
+	--tss-ring: 222.2 84% 4.9%;
+	--tss-radius: 0.5rem;
+}
+
+/* Dark theme - applied when Twitter is in dark mode */
+#twitter-schedule-shortcuts-root.tss-dark {
+	--tss-background: 222.2 84% 4.9%;
+	--tss-foreground: 210 40% 98%;
+	--tss-card: 222.2 84% 4.9%;
+	--tss-card-foreground: 210 40% 98%;
+	--tss-popover: 222.2 84% 4.9%;
+	--tss-popover-foreground: 210 40% 98%;
+	--tss-primary: 210 40% 98%;
+	--tss-primary-foreground: 222.2 47.4% 11.2%;
+	--tss-secondary: 217.2 32.6% 17.5%;
+	--tss-secondary-foreground: 210 40% 98%;
+	--tss-muted: 217.2 32.6% 17.5%;
+	--tss-muted-foreground: 215 20.2% 65.1%;
+	--tss-accent: 217.2 32.6% 17.5%;
+	--tss-accent-foreground: 210 40% 98%;
+	--tss-destructive: 0 62.8% 30.6%;
+	--tss-destructive-foreground: 210 40% 98%;
+	--tss-border: 217.2 32.6% 17.5%;
+	--tss-input: 217.2 32.6% 17.5%;
+	--tss-ring: 212.7 26.8% 83.9%;
+}
+
+/* Base styles for our root element */
+#twitter-schedule-shortcuts-root {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+	font-size: 15px;
+	line-height: 1.5;
+	color: hsl(var(--tss-foreground));
+}
+
+/* Reset any inherited styles from Twitter */
+#twitter-schedule-shortcuts-root * {
+	box-sizing: border-box;
+}
+
+#twitter-schedule-shortcuts-root a {
+	color: hsl(var(--tss-primary));
+	text-decoration: none;
+}
+
+#twitter-schedule-shortcuts-root a:hover {
+	text-decoration: underline;
+}

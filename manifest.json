@@ -1,0 +1,23 @@
+{
+	"manifest_version": 3,
+	"name": "Twitter Schedule Shortcuts",
+	"version": "0.1.0",
+	"description": "Adds quick 'hours from now' buttons to the X.com scheduling modal.",
+	"permissions": ["storage"],
+	"host_permissions": ["https://x.com/*", "https://twitter.com/*"],
+	"action": {
+		"default_title": "Twitter Schedule Shortcuts"
+	},
+	"background": {
+		"service_worker": "background.js",
+		"type": "module"
+	},
+	"content_scripts": [
+		{
+			"matches": ["https://x.com/*", "https://twitter.com/*"],
+			"js": ["content-script.js"],
+			"css": ["style.css"],
+			"run_at": "document_idle"
+		}
+	]
+}
