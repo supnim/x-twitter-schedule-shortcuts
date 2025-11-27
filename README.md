@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⚡ Twitter Schedule Shortcuts
+# ⚡ Twitter/X Schedule Shortcuts
 
 ![Demo](https://media4.giphy.com/media/1CrHkXdEOagOU5vsSb/giphy.gif)
 
@@ -102,6 +102,39 @@ This watches for changes and rebuilds automatically. Refresh the extension in `c
 3. ⏰ Hour buttons calculate "now + N hours" in real-time
 4. 🎯 Updates Twitter's native `<select>` elements with the calculated date/time
 5. 🌐 Displays times across multiple timezones for convenience
+
+---
+
+## 🔒 Privacy & Compliance
+
+### Privacy Policy
+
+This extension collects minimal data to provide its functionality. We only store a single UI preference (whether you've dismissed the info popup) locally on your device using Chrome's storage API. No data is transmitted to any server, and we do not collect any personal information, browsing history, or usage analytics.
+
+**Full Privacy Policy:** [PRIVACY.md](./PRIVACY.md)
+
+### Chrome Web Store User Data Policy Compliance
+
+This extension complies with the Chrome Web Store User Data Policy, including the Limited Use requirements. User data collected by this extension is used solely for the extension's core functionality of providing quick scheduling shortcuts on X.com (Twitter). Specifically:
+
+- ✅ Data is collected and used only for the extension's single purpose
+- ✅ Data is NOT sold to third parties
+- ✅ Data is NOT used or transferred for purposes unrelated to the extension's functionality
+- ✅ Data is NOT used or transferred to determine creditworthiness or for lending purposes
+
+### Data We Collect
+
+- **UI Preference:** A single boolean flag (`tss_info_dismissed`) stored locally to remember if you dismissed the information popup
+
+### Data We Do NOT Collect
+
+- No personal identifiable information (PII)
+- No browsing history or web activity
+- No analytics or tracking
+- No financial or authentication data
+- No location data
+
+All data remains on your device and is never transmitted externally.
 
 ---
 
