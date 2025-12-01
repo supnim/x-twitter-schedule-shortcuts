@@ -38,8 +38,13 @@ const HourButtonsComponent: FC<HourButtonsProps> = ({
 					onClick={() => onClickPreset(preset)}
 					disabled={disabled}
 				>
-					{presetLabels[index]}
-					<span className="ml-2 text-muted-foreground"> / +{preset.hours}hr</span>
+					<span
+						className={`ml-2 ${activePresetId === preset.id ? "text-background" : "text-foreground"}`}
+					>
+						{" "}
+						{presetLabels[index]}
+					</span>
+					<span className="ml-2 text-muted-foreground text-base"> +{preset.hours}hr</span>
 				</Button>
 			))}
 		</div>

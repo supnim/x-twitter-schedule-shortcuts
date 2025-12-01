@@ -2,8 +2,9 @@ import { Button } from "@/components/ui/button"
 import { HelpCircle, Shuffle } from "lucide-react"
 import { type FC, useCallback, useEffect, useRef, useState } from "react"
 import { setApplyingTime } from "../index"
-import { type TimeContext, applyRandomMinutes, buildTimeContext, getTargetTime } from "../timeUtils"
-import { applyTimeToSelectors, findScheduleModal } from "../twitterSelectors"
+import { type TimeContext, applyRandomMinutes, buildTimeContext } from "../timeUtils"
+import { applyDateToSelectors, applyTimeToSelectors, findScheduleModal } from "../twitterSelectors"
+import { type DateOption, DateChips } from "./DateChips"
 import { HourButtons, type TimePreset } from "./HourButtons"
 import { InfoPopup } from "./InfoPopup"
 import { TimezonePreview } from "./TimezonePreview"
@@ -41,6 +42,7 @@ function isExtensionContextValid(): boolean {
 }
 
 export const QuickScheduleRoot: FC<QuickScheduleRootProps> = () => {
+	const [selectedDate, setSelectedDate] = useState<DateOption | null>(null)
 	const [activePresetId, setActivePresetId] = useState<string | null>(null)
 	const [timeContext, setTimeContext] = useState<TimeContext | null>(null)
 	const [showInfo, setShowInfo] = useState(false)
@@ -90,6 +92,40 @@ export const QuickScheduleRoot: FC<QuickScheduleRootProps> = () => {
 		}
 	}, [])
 
+	const handleSelectDate = useCallback(
+		async (dateOption: DateOption) => {
+			if (isApplying) return
+
+			// Find current modal dynamically
+			const currentModal = findScheduleModal()
+			if (!currentModal) {
+				console.warn("[Twitter Schedule Shortcuts] Modal not found")
+				return
+			}
+
+			setIsApplying(true)
+			setApplyingTime(true)
+
+			setSelectedDate(dateOption)
+			// Clear the hour selection and time context when date changes
+			setActivePresetId(null)
+			setTimeContext(null)
+
+			try {
+				// Apply date to Twitter's dropdowns immediately
+				await applyDateToSelectors(currentModal, dateOption.date)
+			} catch (error) {
+				console.error("[Twitter Schedule Shortcuts] Failed to apply date:", error)
+			} finally {
+				if (isMountedRef.current) {
+					setIsApplying(false)
+				}
+				setApplyingTime(false)
+			}
+		},
+		[isApplying]
+	)
+
 	const handleClickPreset = useCallback(
 		async (preset: TimePreset) => {
 			if (isApplying) return
@@ -104,7 +140,22 @@ export const QuickScheduleRoot: FC<QuickScheduleRootProps> = () => {
 			setIsApplying(true)
 			setApplyingTime(true) // Prevent MutationObserver from unmounting during DOM changes
 
-			let targetDate = getTargetTime(preset.hours)
+			// Calculate target date based on selected date + hours
+			let targetDate: Date
+			if (selectedDate) {
+				// Use selected date as base, add hours from now's time
+				const now = new Date()
+				targetDate = new Date(selectedDate.date)
+				// Set the time to current time + hours
+				targetDate.setHours(now.getHours() + preset.hours)
+				targetDate.setMinutes(now.getMinutes())
+				targetDate.setSeconds(0)
+				targetDate.setMilliseconds(0)
+			} else {
+				// No date selected, use today and add hours from now
+				targetDate = new Date()
+				targetDate.setHours(targetDate.getHours() + preset.hours)
+			}
 
 			if (randomizeMinutes) {
 				targetDate = applyRandomMinutes(targetDate, 5)
@@ -128,7 +179,7 @@ export const QuickScheduleRoot: FC<QuickScheduleRootProps> = () => {
 				setApplyingTime(false) // Re-enable MutationObserver checks
 			}
 		},
-		[isApplying, randomizeMinutes]
+		[isApplying, randomizeMinutes, selectedDate]
 	)
 
 	const handleToggleRandomize = useCallback(() => {
@@ -172,12 +223,24 @@ export const QuickScheduleRoot: FC<QuickScheduleRootProps> = () => {
 				</div>
 			</div>
 
-			<HourButtons
-				activePresetId={activePresetId}
-				presets={DEFAULT_PRESETS}
-				onClickPreset={handleClickPreset}
-				disabled={isApplying}
-			/>
+			<div className="mb-3">
+				<span className="text-xs text-muted-foreground mb-1.5 block">Date:</span>
+				<DateChips
+					selectedDateId={selectedDate?.id ?? null}
+					onSelectDate={handleSelectDate}
+					disabled={isApplying}
+				/>
+			</div>
+
+			<div>
+				<span className="text-xs text-muted-foreground mb-1.5 block">Time (+hours from now):</span>
+				<HourButtons
+					activePresetId={activePresetId}
+					presets={DEFAULT_PRESETS}
+					onClickPreset={handleClickPreset}
+					disabled={isApplying}
+				/>
+			</div>
 
 			<TimezonePreview context={timeContext} />
 		</div>

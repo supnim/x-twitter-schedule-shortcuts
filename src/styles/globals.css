@@ -159,4 +159,23 @@
 	.hover\:text-foreground:hover {
 		color: var(--foreground);
 	}
+
+	/* Scrollbar styling for date chips */
+	.scrollbar-thin {
+		scrollbar-width: thin;
+		scrollbar-color: var(--muted-foreground) transparent;
+	}
+	.scrollbar-thin::-webkit-scrollbar {
+		height: 4px;
+	}
+	.scrollbar-thin::-webkit-scrollbar-track {
+		background: transparent;
+	}
+	.scrollbar-thin::-webkit-scrollbar-thumb {
+		background-color: var(--muted-foreground);
+		border-radius: 2px;
+	}
+	.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+		background-color: var(--foreground);
+	}
 }

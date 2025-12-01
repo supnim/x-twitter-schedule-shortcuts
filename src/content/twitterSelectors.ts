@@ -87,6 +87,48 @@ function findSelectByLabelText(modal: HTMLElement, labelText: string): HTMLSelec
 }
 
 /**
+ * Apply just the date (month, day, year) to Twitter's schedule selectors.
+ * Used when user selects a date chip without selecting an hour.
+ */
+export async function applyDateToSelectors(modal: HTMLElement, targetDate: Date): Promise<void> {
+	// Validate modal is still in DOM
+	if (!document.body.contains(modal)) {
+		throw new Error("Modal no longer in DOM")
+	}
+
+	const year = targetDate.getFullYear()
+	const month = targetDate.getMonth() + 1 // 1-12
+	const day = targetDate.getDate() // 1-31
+
+	// Helper to set value with small delay for React to process
+	const setWithDelay = async (labelText: string, value: string) => {
+		// Re-validate modal before each selector
+		if (!document.body.contains(modal)) {
+			throw new Error(`Modal removed during selector update: ${labelText}`)
+		}
+
+		const select = findSelectByLabelText(modal, labelText)
+
+		if (!select) {
+			console.warn(`[Twitter Schedule Shortcuts] Could not find selector with label: ${labelText}`)
+			return
+		}
+
+		const success = setSelectValue(select, value)
+		if (!success) {
+			console.warn(`[Twitter Schedule Shortcuts] Failed to set ${labelText} to ${value}`)
+		}
+		// Small delay to let React process the change
+		await new Promise(resolve => setTimeout(resolve, 50))
+	}
+
+	// Set date values in order (month affects available days)
+	await setWithDelay("Month", String(month))
+	await setWithDelay("Day", String(day))
+	await setWithDelay("Year", String(year))
+}
+
+/**
  * Apply a target date/time to Twitter's schedule selectors.
  * Finds selectors by their label text (Month, Day, Year, Hour, Minute) to handle dynamic IDs.
  */
