@@ -51,11 +51,7 @@ function generateDateOptions(days: number): DateOption[] {
 	return options
 }
 
-const DateChipsComponent: FC<DateChipsProps> = ({
-	selectedDateId,
-	onSelectDate,
-	disabled,
-}) => {
+const DateChipsComponent: FC<DateChipsProps> = ({ selectedDateId, onSelectDate, disabled }) => {
 	const dateOptions = useMemo(() => generateDateOptions(14), [])
 
 	return (

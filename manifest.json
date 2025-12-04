@@ -10,9 +10,10 @@
 		"128": "icons/icon-128.png"
 	},
 	"permissions": ["storage"],
-	"host_permissions": ["https://x.com/*", "https://twitter.com/*"],
+	"host_permissions": ["https://x.com/*", "https://twitter.com/*", "https://api.openai.com/*"],
 	"action": {
-		"default_title": "Twitter/X Schedule Shortcuts"
+		"default_title": "Twitter/X Schedule Shortcuts",
+		"default_popup": "src/popup/index.html"
 	},
 	"background": {
 		"service_worker": "src/background/index.ts",

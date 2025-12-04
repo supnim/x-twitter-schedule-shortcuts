@@ -3,7 +3,8 @@
 @source "src/**/*.{ts,tsx}";
 
 /* Scoped CSS variables for our extension - using standard shadcn naming */
-#twitter-schedule-shortcuts-root {
+#twitter-schedule-shortcuts-root,
+#twitter-ai-enhance-root {
 	/* Light theme (default) - using OKLCH color space */
 	--radius: 0.5rem;
 	--background: oklch(1 0 0);
@@ -28,7 +29,8 @@
 }
 
 /* Dark theme - applied when Twitter is in dark mode */
-#twitter-schedule-shortcuts-root.dark {
+#twitter-schedule-shortcuts-root.dark,
+#twitter-ai-enhance-root.dark {
 	--background: oklch(0.145 0 0);
 	--foreground: oklch(0.985 0 0);
 	--card: oklch(0.205 0 0);
@@ -50,30 +52,35 @@
 	--ring: oklch(0.556 0 0);
 }
 
-/* Base styles for our root element */
-#twitter-schedule-shortcuts-root {
+/* Base styles for our root elements */
+#twitter-schedule-shortcuts-root,
+#twitter-ai-enhance-root {
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-	font-size: 18px;
+	font-size: 14px;
 	line-height: 1.5;
 	color: var(--foreground);
 }
 
 /* Reset any inherited styles from Twitter */
-#twitter-schedule-shortcuts-root * {
+#twitter-schedule-shortcuts-root *,
+#twitter-ai-enhance-root * {
 	box-sizing: border-box;
 }
 
-#twitter-schedule-shortcuts-root a {
+#twitter-schedule-shortcuts-root a,
+#twitter-ai-enhance-root a {
 	color: var(--primary);
 	text-decoration: none;
 }
 
-#twitter-schedule-shortcuts-root a:hover {
+#twitter-schedule-shortcuts-root a:hover,
+#twitter-ai-enhance-root a:hover {
 	text-decoration: underline;
 }
 
 /* Tailwind utility overrides for scoped variables */
-#twitter-schedule-shortcuts-root {
+#twitter-schedule-shortcuts-root,
+#twitter-ai-enhance-root {
 	.bg-card {
 		background-color: var(--card);
 	}
@@ -98,6 +105,9 @@
 	.bg-popover {
 		background-color: var(--popover);
 	}
+	.bg-destructive\/10 {
+		background-color: color-mix(in oklab, var(--destructive) 10%, transparent);
+	}
 
 	.text-card-foreground {
 		color: var(--card-foreground);
@@ -117,6 +127,9 @@
 	.text-destructive-foreground {
 		color: var(--destructive-foreground);
 	}
+	.text-destructive {
+		color: var(--destructive);
+	}
 	.text-muted-foreground {
 		color: var(--muted-foreground);
 	}
@@ -133,16 +146,28 @@
 	.border-input {
 		border-color: var(--input);
 	}
+	.border-destructive\/20 {
+		border-color: color-mix(in oklab, var(--destructive) 20%, transparent);
+	}
 
 	.ring-ring {
 		--tw-ring-color: var(--ring);
 	}
+	.ring-offset-background {
+		--tw-ring-offset-color: var(--background);
+	}
 	.focus-visible\:ring-ring:focus-visible {
 		--tw-ring-color: var(--ring);
+	}
+	.focus-visible\:ring-offset-2:focus-visible {
+		--tw-ring-offset-width: 2px;
 	}
 
 	.hover\:bg-primary\/90:hover {
 		background-color: color-mix(in oklab, var(--primary) 90%, transparent);
+	}
+	.hover\:bg-primary\/10:hover {
+		background-color: color-mix(in oklab, var(--primary) 10%, transparent);
 	}
 	.hover\:bg-secondary\/80:hover {
 		background-color: color-mix(in oklab, var(--secondary) 80%, transparent);
@@ -158,6 +183,9 @@
 	}
 	.hover\:text-foreground:hover {
 		color: var(--foreground);
+	}
+	.hover\:text-primary:hover {
+		color: var(--primary);
 	}
 
 	/* Scrollbar styling for date chips */

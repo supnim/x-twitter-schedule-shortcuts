@@ -1,4 +1,5 @@
 import { type Root, createRoot } from "react-dom/client"
+import { cleanupAIEnhance, initAIEnhance } from "./ai"
 import {
 	EXTENSION_ROOT_ID,
 	findPreviewElement,
@@ -337,6 +338,7 @@ function cleanup(): void {
 		mountAbortController = null
 	}
 	unmountApp()
+	cleanupAIEnhance()
 	initialized = false
 }
 
@@ -435,6 +437,7 @@ function init(): void {
 	if (initialized) return
 	initialized = true
 	initObserver()
+	initAIEnhance()
 }
 
 // Initialize when DOM is ready
