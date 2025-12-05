@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "Twitter/X Shortcuts",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"description": "Quick scheduling buttons and AI-powered tweet enhancement for X.com",
 	"author": "Nimesh (https://x.com/sup_nim)",
 	"icons": {
