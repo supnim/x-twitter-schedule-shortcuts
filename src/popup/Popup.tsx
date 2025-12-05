@@ -18,9 +18,9 @@ import {
 	EyeOff,
 	Loader2,
 	RotateCcw,
-	Sparkles,
+	Shield,
 } from "lucide-react"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 const AI_STORAGE_KEYS = {
 	API_KEY: "tss_openai_api_key",
@@ -67,6 +67,7 @@ async function validateAPIKey(apiKey: string): Promise<{ valid: boolean; error?:
 
 export function Popup() {
 	const [apiKey, setApiKey] = useState("")
+	const inputRef = useRef<HTMLInputElement>(null)
 	const [model, setModel] = useState("gpt-5-mini")
 	const [prompt, setPrompt] = useState(DEFAULT_PROMPT)
 	const [showKey, setShowKey] = useState(false)
@@ -150,129 +151,179 @@ export function Popup() {
 		})
 	}, [])
 
+	const handlePaste = useCallback(async () => {
+		try {
+			const text = await navigator.clipboard.readText()
+			if (text) {
+				setApiKey(text)
+				setError("")
+				// Also set the native input value directly
+				if (inputRef.current) {
+					inputRef.current.value = text
+				}
+			}
+		} catch (err) {
+			console.error("Clipboard read failed:", err)
+			setError("Failed to read clipboard")
+		}
+	}, [])
+
 	const maskedKey = apiKey ? `${apiKey.slice(0, 7)}...${apiKey.slice(-4)}` : ""
 
 	return (
-		<div className="w-[360px] bg-background text-foreground">
-			<Card className="border-0 shadow-none">
-				<CardHeader className="pb-4">
-					<div className="flex items-center gap-2">
-						<Sparkles className="h-5 w-5 text-primary" />
-						<CardTitle className="text-lg">AI Settings</CardTitle>
-					</div>
-					<CardDescription>
-						Configure your OpenAI API key to enhance tweets with AI.
-					</CardDescription>
-				</CardHeader>
-				<CardContent className="space-y-4">
-					<div className="space-y-2">
-						<Label htmlFor="api-key">OpenAI API Key</Label>
-						<div className="relative">
-							<Input
-								id="api-key"
-								type={showKey ? "text" : "password"}
-								value={apiKey}
-								onChange={e => {
-									setApiKey(e.target.value)
-									setError("")
-								}}
-								placeholder="sk-..."
-								className="pr-10"
-							/>
+		<Card className="border-0 shadow-none min-w-sm">
+			<CardHeader className="pb-4">
+				<CardTitle className="text-lg">AI Settings</CardTitle>
+
+				<CardDescription>Configure your OpenAI API key to enhance tweets with AI.</CardDescription>
+			</CardHeader>
+			<CardContent className="space-y-4">
+				<div className="space-y-2">
+					<Label htmlFor="api-key">OpenAI API Key</Label>
+					<div className="relative">
+						<Input
+							ref={inputRef}
+							id="api-key"
+							type={showKey ? "text" : "password"}
+							value={apiKey}
+							onChange={e => {
+								setApiKey(e.target.value)
+								setError("")
+							}}
+							placeholder="sk-..."
+							className="pr-20"
+						/>
+						<div className="absolute right-1 top-1/2 -translate-y-1/2 flex gap-0.5">
+							<Button
+								variant="ghost"
+								size="sm"
+								className="h-8 px-2 text-xs"
+								onClick={handlePaste}
+								tabIndex={-1}
+							>
+								Paste
+							</Button>
 							<Button
 								variant="ghost"
 								size="icon"
-								className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
+								className="h-8 w-8"
 								onClick={() => setShowKey(!showKey)}
+								tabIndex={-1}
 							>
 								{showKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
 							</Button>
 						</div>
-						{apiKey && !showKey && (
-							<p className="text-xs text-muted-foreground">Stored: {maskedKey}</p>
+					</div>
+					{apiKey && !showKey && (
+						<p className="text-xs text-muted-foreground">Stored: {maskedKey}</p>
+					)}
+					{error && <p className="text-xs text-destructive">{error}</p>}
+				</div>
+
+				<div className="space-y-2">
+					<Label htmlFor="model">Model</Label>
+					<Select value={model} onValueChange={setModel}>
+						<SelectTrigger id="model">
+							<SelectValue placeholder="Select a model" />
+						</SelectTrigger>
+						<SelectContent>
+							{AVAILABLE_MODELS.map(m => (
+								<SelectItem key={m.id} value={m.id}>
+									{m.name}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				</div>
+
+				<div className="space-y-2">
+					<Button
+						variant="ghost"
+						onClick={() => setShowPrompt(!showPrompt)}
+						className="flex items-center justify-between w-full h-auto p-0 text-sm font-medium hover:bg-transparent"
+					>
+						<Label className="cursor-pointer">System Prompt</Label>
+						{showPrompt ? (
+							<ChevronUp className="h-4 w-4 text-muted-foreground" />
+						) : (
+							<ChevronDown className="h-4 w-4 text-muted-foreground" />
 						)}
-						{error && <p className="text-xs text-destructive">{error}</p>}
-					</div>
-
-					<div className="space-y-2">
-						<Label htmlFor="model">Model</Label>
-						<Select value={model} onValueChange={setModel}>
-							<SelectTrigger id="model">
-								<SelectValue placeholder="Select a model" />
-							</SelectTrigger>
-							<SelectContent>
-								{AVAILABLE_MODELS.map(m => (
-									<SelectItem key={m.id} value={m.id}>
-										{m.name}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-					</div>
-
-					<div className="space-y-2">
-						<Button
-							variant="ghost"
-							onClick={() => setShowPrompt(!showPrompt)}
-							className="flex items-center justify-between w-full h-auto p-0 text-sm font-medium hover:bg-transparent"
-						>
-							<Label className="cursor-pointer">System Prompt</Label>
-							{showPrompt ? (
-								<ChevronUp className="h-4 w-4 text-muted-foreground" />
-							) : (
-								<ChevronDown className="h-4 w-4 text-muted-foreground" />
-							)}
-						</Button>
-						{showPrompt && (
-							<div className="space-y-2">
-								<Textarea
-									id="prompt"
-									value={prompt}
-									onChange={e => setPrompt(e.target.value)}
-									placeholder="Enter your system prompt..."
-									className="min-h-[120px] text-xs resize-none"
-								/>
-								<div className="flex justify-end">
-									<Button
-										variant="ghost"
-										size="sm"
-										onClick={handleResetPrompt}
-										className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
-									>
-										<RotateCcw className="h-3 w-3 mr-1" />
-										Reset to default
-									</Button>
-								</div>
+					</Button>
+					{showPrompt && (
+						<div className="space-y-2">
+							<Textarea
+								id="prompt"
+								value={prompt}
+								onChange={e => setPrompt(e.target.value)}
+								placeholder="Enter your system prompt..."
+								className="min-h-[120px] text-xs resize-none"
+							/>
+							<div className="flex justify-end">
+								<Button
+									variant="ghost"
+									size="sm"
+									onClick={handleResetPrompt}
+									className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
+								>
+									<RotateCcw className="h-3 w-3 mr-1" />
+									Reset to default
+								</Button>
 							</div>
+						</div>
+					)}
+				</div>
+
+				<div className="flex items-center justify-between pt-2">
+					<Button variant="ghost" size="sm" onClick={handleClear} disabled={!apiKey}>
+						Clear
+					</Button>
+					<Button onClick={handleSave} disabled={!apiKey || isValidating} size="sm">
+						{isValidating ? (
+							<>
+								<Loader2 className="h-4 w-4 animate-spin" />
+								Validating...
+							</>
+						) : isSaved ? (
+							<>
+								<Check className="h-4 w-4" />
+								Saved!
+							</>
+						) : (
+							"Save"
 						)}
-					</div>
-
-					<div className="flex items-center justify-between pt-2">
-						<Button variant="ghost" size="sm" onClick={handleClear} disabled={!apiKey}>
-							Clear
-						</Button>
-						<Button onClick={handleSave} disabled={!apiKey || isValidating} size="sm">
-							{isValidating ? (
-								<>
-									<Loader2 className="h-4 w-4 animate-spin" />
-									Validating...
-								</>
-							) : isSaved ? (
-								<>
-									<Check className="h-4 w-4" />
-									Saved!
-								</>
-							) : (
-								"Save"
-							)}
-						</Button>
-					</div>
-
-					<p className="text-xs text-muted-foreground pt-2 border-t border-border">
-						Your API key is stored locally and only sent to OpenAI.
+					</Button>
+				</div>
+				<div className="flex flex-row p-4 gap-2 items-center justify-between pt-2 border-t border-border">
+					<Shield className="text-lime-500" />
+					<p className="text-xs text-lime-500 r">
+						Your API key is safely stored locally and only sent to OpenAI.
 					</p>
-				</CardContent>
-			</Card>
-		</div>
+				</div>
+
+				<div className="pt-4 border-t border-border space-y-2">
+					<p className="text-xs font-medium text-muted-foreground">About</p>
+					<p className="text-xs text-muted-foreground">
+						Made by{" "}
+						<a
+							href="https://x.com/sup_nim"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="text-foreground hover:underline text-sky-500 "
+						>
+							@sup_nim
+						</a>{" "}
+						at{" "}
+						<a
+							href="https://studio.gold"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="text-foreground hover:underline text-sky-500 "
+						>
+							studio.gold
+						</a>
+					</p>
+				</div>
+			</CardContent>
+		</Card>
 	)
 }

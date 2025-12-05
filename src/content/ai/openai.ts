@@ -89,8 +89,6 @@ export async function enhanceTweet(
 					{ role: "system", content: systemPrompt },
 					{ role: "user", content: text },
 				],
-				max_tokens: 300,
-				temperature: 0.7,
 			}),
 		})
 

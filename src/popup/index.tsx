@@ -1,6 +1,6 @@
 import { createRoot } from "react-dom/client"
 import { Popup } from "./Popup"
-import "@/styles/popup.css"
+import "@/styles/globals.css"
 
 const root = document.getElementById("root")
 if (root) {

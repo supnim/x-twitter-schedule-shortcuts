@@ -1,18 +1,22 @@
 {
 	"manifest_version": 3,
-	"name": "Twitter/X Schedule Shortcuts",
+	"name": "Twitter/X Shortcuts",
 	"version": "0.2.0",
-	"description": "Adds quick 'hours from now' buttons to the X.com scheduling modal.",
+	"description": "Quick scheduling buttons and AI-powered tweet enhancement for X.com",
 	"author": "Nimesh (https://x.com/sup_nim)",
 	"icons": {
 		"16": "icons/icon-16.png",
 		"48": "icons/icon-48.png",
 		"128": "icons/icon-128.png"
 	},
-	"permissions": ["storage"],
-	"host_permissions": ["https://x.com/*", "https://twitter.com/*", "https://api.openai.com/*"],
+	"permissions": ["storage", "clipboardRead"],
+	"host_permissions": [
+		"https://x.com/*",
+		"https://twitter.com/*",
+		"https://api.openai.com/*"
+	],
 	"action": {
-		"default_title": "Twitter/X Schedule Shortcuts",
+		"default_title": "X Shortcuts",
 		"default_popup": "src/popup/index.html"
 	},
 	"background": {
